@@ -1,0 +1,88 @@
+#ifndef AGAVE_KEYS_H
+#define AGAVE_KEYS_H
+
+#define KEY_A        'a'
+#define KEY_B        'b'
+#define KEY_C        'c'
+#define KEY_D        'd'
+#define KEY_E        'e'
+#define KEY_F        'f'
+#define KEY_G        'g'
+#define KEY_H        'h'
+#define KEY_I        'i'
+#define KEY_J        'j'
+#define KEY_K        'k'
+#define KEY_L        'l'
+#define KEY_M        'm'
+#define KEY_N        'n'
+#define KEY_O        'o'
+#define KEY_P        'p'
+#define KEY_Q        'q'
+#define KEY_R        'r'
+#define KEY_S        's'
+#define KEY_T        't'
+#define KEY_U        'u'
+#define KEY_V        'v'
+#define KEY_W        'w'
+#define KEY_X        'x'
+#define KEY_Y        'y'
+#define KEY_Z        'z'
+
+#define KEY_0        '0'
+#define KEY_1        '1'
+#define KEY_2        '2'
+#define KEY_3        '3'
+#define KEY_4        '4'
+#define KEY_5        '5'
+#define KEY_6        '6'
+#define KEY_7        '7'
+#define KEY_8        '8'
+#define KEY_9        '9'
+
+#define KEY_EXCLAM   '!'
+#define KEY_AT       '@'
+#define KEY_HASH     '#'
+#define KEY_DOLLAR   '$'
+#define KEY_PERCENT  '%'
+#define KEY_CARET    '^'
+#define KEY_AMP      '&'
+#define KEY_STAR     '*'
+#define KEY_LPAREN   '('
+#define KEY_RPAREN   ')'
+
+#define KEY_MINUS    '-'
+#define KEY_UNDERSCORE '_'
+#define KEY_EQUAL    '='
+#define KEY_PLUS     '+'
+#define KEY_LBRACKET '['
+#define KEY_LBRACE   '{'
+#define KEY_RBRACKET ']'
+#define KEY_RBRACE   '}'
+#define KEY_BACKSLASH '\\'
+#define KEY_PIPE      '|'
+#define KEY_SEMICOLON ';'
+#define KEY_COLON     ':'
+#define KEY_QUOTE     '\''
+#define KEY_DQUOTE    '"'
+#define KEY_COMMA     ','
+#define KEY_LT        '<'
+#define KEY_DOT       '.'
+#define KEY_GT        '>'
+#define KEY_SLASH     '/'
+#define KEY_QMARK     '?'
+#define KEY_BACKTICK  '`'
+#define KEY_TILDE     '~'
+
+#define KEY_NONE       0
+#define KEY_ESC        27
+#define KEY_BACKSPACE  '\b'
+#define KEY_TAB        '\t'
+#define KEY_ENTER      '\n'
+#define KEY_SPACE      ' '
+
+#define KEY_UP         0x80
+#define KEY_DOWN       0x81
+#define KEY_LEFT       0x82
+#define KEY_RIGHT      0x83
+
+#endif // AGAVE_KEYS_H
