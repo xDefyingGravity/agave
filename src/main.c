@@ -20,6 +20,7 @@ void kmain() {
 
     flush_keyboard_buffer();
 
+    kheap_init();
     kcore_initialize();
     terminal_initialize(true);
 

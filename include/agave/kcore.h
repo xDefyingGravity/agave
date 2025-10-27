@@ -19,7 +19,11 @@ typedef struct {
 void kcore_initialize(void);
 
 void kshutdown(void);
-void kpanic(const char *fmt, ...);
+
 kcore_information_t* kcore_get_information(void);
+
+#define kpanic(fmt, ...) kpanic_ex(__FILE__, __LINE__, __func__, fmt, ##__VA_ARGS__)
+
+void kpanic_ex(const char *file, int line, const char *func, const char *fmt, ...);
 
 #endif // AGAVE_KCORE_H

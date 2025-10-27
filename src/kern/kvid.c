@@ -164,16 +164,38 @@ void kvprintf(const char *fmt, va_list args) {
 
         i++;
         bool zero_pad = false;
-        size_t width = 0;
+        int width = 0;
+        int precision = -1; // default: no limit
 
         if (fmt[i] == '0') {
             zero_pad = true;
             i++;
         }
 
-        while (fmt[i] >= '0' && fmt[i] <= '9') {
-            width = width * 10 + (fmt[i] - '0');
+        // parse width
+        if (fmt[i] == '*') {
+            width = va_arg(args, int);
             i++;
+        } else {
+            while (fmt[i] >= '0' && fmt[i] <= '9') {
+                width = width * 10 + (fmt[i] - '0');
+                i++;
+            }
+        }
+
+        // parse precision
+        if (fmt[i] == '.') {
+            i++;
+            if (fmt[i] == '*') {
+                precision = va_arg(args, int);
+                i++;
+            } else {
+                precision = 0;
+                while (fmt[i] >= '0' && fmt[i] <= '9') {
+                    precision = precision * 10 + (fmt[i] - '0');
+                    i++;
+                }
+            }
         }
 
         bool long_flag = false;
@@ -198,57 +220,45 @@ void kvprintf(const char *fmt, va_list args) {
             const char *s = va_arg(args, const char *);
             if (!s) s = "(null)";
             size_t len = strlen(s);
-            for (size_t j = 0; j + len < width; j++)
-                kputchar(zero_pad ? '0' : ' ');
-            kprint(s);
+            if (precision >= 0 && (size_t)precision < len) len = (size_t)precision;
+            for (int j = (int)len; j < width; j++) kputchar(zero_pad ? '0' : ' ');
+            for (size_t j = 0; j < len; j++) kputchar(s[j]);
             break;
         }
 
         case 'd':
         case 'i': {
             long long val;
-            if (long_long_flag)
-                val = va_arg(args, long long);
-            else if (long_flag)
-                val = va_arg(args, long);
-            else
-                val = va_arg(args, int);
+            if (long_long_flag) val = va_arg(args, long long);
+            else if (long_flag) val = va_arg(args, long);
+            else val = va_arg(args, int);
             kitoa(val, buffer, 10);
             size_t len = strlen(buffer);
-            for (size_t j = 0; j + len < width; j++)
-                kputchar(zero_pad ? '0' : ' ');
+            for (size_t j = len; j < (size_t)width; j++) kputchar(zero_pad ? '0' : ' ');
             kprint(buffer);
             break;
         }
 
         case 'u': {
             unsigned long long val;
-            if (long_long_flag)
-                val = va_arg(args, unsigned long long);
-            else if (long_flag)
-                val = va_arg(args, unsigned long);
-            else
-                val = va_arg(args, unsigned int);
+            if (long_long_flag) val = va_arg(args, unsigned long long);
+            else if (long_flag) val = va_arg(args, unsigned long);
+            else val = va_arg(args, unsigned int);
             kitoa_unsigned(val, buffer, 10);
             size_t len = strlen(buffer);
-            for (size_t j = 0; j + len < width; j++)
-                kputchar(zero_pad ? '0' : ' ');
+            for (size_t j = len; j < (size_t)width; j++) kputchar(zero_pad ? '0' : ' ');
             kprint(buffer);
             break;
         }
 
         case 'x': {
             unsigned long long val;
-            if (long_long_flag)
-                val = va_arg(args, unsigned long long);
-            else if (long_flag)
-                val = va_arg(args, unsigned long);
-            else
-                val = va_arg(args, unsigned int);
+            if (long_long_flag) val = va_arg(args, unsigned long long);
+            else if (long_flag) val = va_arg(args, unsigned long);
+            else val = va_arg(args, unsigned int);
             kitoa_unsigned(val, buffer, 16);
             size_t len = strlen(buffer);
-            for (size_t j = 0; j + len < width; j++)
-                kputchar(zero_pad ? '0' : ' ');
+            for (size_t j = len; j < (size_t)width; j++) kputchar(zero_pad ? '0' : ' ');
             kprint(buffer);
             break;
         }
