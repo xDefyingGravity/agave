@@ -1,60 +1,45 @@
+#include "agave/kutils.h"
 #include <agave/idt.h>
 #include <agave/utils.h>
-#include <stdbool.h>
 
-#define IDT_MAX_DESCRIPTORS 256
-
+static irq_handler_t irq_handlers[IRQ_COUNT] = {0};
 idt_entry_t idt[IDT_MAX_DESCRIPTORS];
 idtr_t idtr;
 
-static bool vectors[IDT_MAX_DESCRIPTORS];
-static irq_handler_t irq_handlers[IDT_MAX_DESCRIPTORS];
-
-NORETURN
-void exception_handler(void);
-void exception_handler() {
-    __asm__ volatile(
-        "cli\n"
-        "hlt\n"
-    );
+NORETURN void exception_handler(void) {
+    khalt_cpu(true);
     __builtin_unreachable();
 }
 
 void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) {
-    idt_entry_t* descriptor = &idt[vector];
-    descriptor->isr_low    = (uint32_t)isr & 0xFFFF;
-    descriptor->kernel_cs  = 0x08;
-    descriptor->attributes = flags;
-    descriptor->isr_high   = (uint32_t)isr >> 16;
-    descriptor->reserved   = 0;
+    idt_entry_t* desc = &idt[vector];
+    desc->isr_low    = (uint32_t)isr & 0xFFFF;
+    desc->kernel_cs  = 0x08;
+    desc->attributes = flags;
+    desc->isr_high   = (uint32_t)isr >> 16;
+    desc->reserved   = 0;
 }
 
-void idt_register_irq(uint8_t irq, irq_handler_t handler) {
-    if (irq < IDT_MAX_DESCRIPTORS)
-        irq_handlers[irq] = handler;
+void register_irq(uint8_t irq, irq_handler_t handler) {
+    if (irq < IRQ_COUNT) irq_handlers[irq] = handler;
 }
 
-void idt_dispatch_irq(uint8_t irq) {
-    if (irq < IDT_MAX_DESCRIPTORS && irq_handlers[irq])
+void irq_dispatch(uint32_t irq) {
+    if (irq < IRQ_COUNT && irq_handlers[irq])
         irq_handlers[irq]();
 }
-    
-extern void* isr_stub_table[];
-extern void irq1_handler(void);
-extern void irq0_handler(void);
 
-void idt_init() {
-    idtr.base = (uintptr_t)&idt[0];
-    idtr.limit = (uint16_t)(sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1);
+extern void (*isr_stub_table[])(void);
 
-    for (uint8_t vector = 0; vector < 32; vector++) {
-        idt_set_descriptor(vector, isr_stub_table[vector], 0x8E);
-        vectors[vector] = true;
-    }
+void idt_init(void) {
+    idtr.base  = (uintptr_t)&idt[0];
+    idtr.limit = sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
 
-    idt_set_descriptor(0x20, irq0_handler, 0x8E);
-    idt_set_descriptor(0x20 + 1, irq1_handler, 0x8E);
-    vectors[0x20 + 1] = true;
+    for (uint8_t i = 0; i < 32; i++)
+        idt_set_descriptor(i, &((void**)isr_stub_table)[i], 0x8E);
 
-    __asm__ volatile ("lidt %0" : : "m"(idtr));
+    for (uint8_t i = 0; i < IRQ_COUNT; i++)
+        idt_set_descriptor(IRQ_BASE + i, &((void**)isr_stub_table)[32 + i], 0x8E);
+
+    __asm__ volatile("lidt %0" : : "m"(idtr));
 }

@@ -15,5 +15,6 @@ void kfree(void *ptr);
 void *krealloc(void *ptr, size_t new_size);
 void *kcalloc(size_t num, size_t size);
 void kmemcpy(void* dest, const void* src, size_t n);
+void kmemset(void* dest, int value, size_t n);
 
 #endif // AGAVE_KMEM_H

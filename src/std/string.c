@@ -1,3 +1,4 @@
+#include <agave/kmem.h>
 #include <string.h>
 
 size_t strlen(const char* str) {
@@ -50,4 +51,20 @@ char* strchr(const char* str, int c) {
         str++;
     }
     return NULL;
+}
+
+char* strdup(const char* str) {
+    size_t len = strlen(str);
+    char* dup = (char*)kmalloc(len + 1);
+    if (dup) {
+        strcpy(dup, str);
+    }
+    return dup;
+}
+
+void strncpy(char* dest, const char* src, size_t n) {
+    while (n-- && (*dest++ = *src++) != '\0');
+    while (n--) {
+        *dest++ = '\0';
+    }
 }

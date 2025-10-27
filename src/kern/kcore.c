@@ -1,16 +1,13 @@
 #include <agave/kcpu.h>
 #include <agave/kutils.h>
-#include "agave/pit.h"
+#include <agave/pit.h>
+#include <stdbool.h>
 #include <agave/kcore.h>
 #include <agave/ports.h>
 #include <agave/io.h>
 #include <agave/kvid.h>
 
 kcore_information_t kcore_info;
-
-static inline void khalt_cpu(void) {
-    for (;;) __asm__ volatile("hlt");
-}
 
 void kshutdown(void) {
     outw(PM1a_CNT, SLP_TYPa | SLP_EN);
@@ -24,7 +21,7 @@ void kshutdown(void) {
         : "r"(0)
     );
 
-    khalt_cpu();
+    khalt_cpu(false);
 }
 
 
@@ -45,7 +42,7 @@ void kpanic(const char *fmt, ...) {
     kprint("\n\nsystem halted.");
 
     for (;;) {
-        khalt_cpu();
+        khalt_cpu(false);
     }
 }
 

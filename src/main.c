@@ -1,3 +1,4 @@
+#include <agave/fs.h>
 #include <agave/ktimer.h>
 #include <agave/kcore.h>
 #include <agave/pit.h>
@@ -16,13 +17,15 @@ void kmain() {
 
     ktimer_initialize(TICK_FREQUENCY);
     kdriver_init_all();
-    
+
     flush_keyboard_buffer();
 
     kcore_initialize();
     terminal_initialize(true);
 
-    kenable_interrupts();
+    fs_initialize("ramfs", RAMFS, FS_FLAG_PRIMARY);
+    fs_mount_all();
 
-    inf_idle();
-} 
+    kenable_interrupts();
+    kidle();
+}

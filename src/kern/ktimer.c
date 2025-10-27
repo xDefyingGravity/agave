@@ -1,3 +1,4 @@
+#include <agave/kutils.h>
 #include <agave/pit.h>
 #include <agave/ktimer.h>
 #include <stdint.h>
@@ -28,7 +29,7 @@ void ksleep(uint32_t milliseconds) {
     uint64_t start_ticks = ktimer_get_ticks();
     uint64_t wait_ticks = (milliseconds * timer_frequency_hz) / 1000;
     while (ktimer_get_ticks() - start_ticks < wait_ticks) {
-        __asm__ volatile("hlt");
+        khalt_cpu(false);
     }
 }
 
@@ -36,7 +37,7 @@ void ksleep_micro(uint32_t microseconds) {
     uint64_t start_ticks = ktimer_get_ticks();
     uint64_t wait_ticks = (microseconds * timer_frequency_hz) / 1000000;
     while (ktimer_get_ticks() - start_ticks < wait_ticks) {
-        __asm__ volatile("hlt");
+        khalt_cpu(false);
     }
 }
 
@@ -44,13 +45,13 @@ void ksleep_nano(uint32_t nanoseconds) {
     uint64_t start_ticks = ktimer_get_ticks();
     uint64_t wait_ticks = (nanoseconds * timer_frequency_hz) / 1000000000;
     while (ktimer_get_ticks() - start_ticks < wait_ticks) {
-        __asm__ volatile("hlt");
+        khalt_cpu(false);
     }
 }
 
 void ktimer_wait_ticks(uint64_t ticks) {
     uint64_t start_ticks = ktimer_get_ticks();
     while (ktimer_get_ticks() - start_ticks < ticks) {
-        __asm__ volatile("hlt");
+        khalt_cpu(false);
     }
 }

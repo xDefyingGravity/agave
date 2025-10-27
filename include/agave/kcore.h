@@ -1,6 +1,7 @@
 #ifndef AGAVE_KCORE_H
 #define AGAVE_KCORE_H
 
+#include "agave/fs.h"
 #include <stdint.h>
 #define PM1a_CNT 0x604
 #define SLP_TYPa 0x2000
@@ -11,6 +12,8 @@ typedef struct {
     uint64_t uptime_ticks;
     uint32_t cpus_count;
     const char *kernel_version;
+
+    fs_t *fs;
 } kcore_information_t;
 
 void kcore_initialize(void);
