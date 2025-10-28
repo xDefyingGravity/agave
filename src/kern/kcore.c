@@ -33,15 +33,17 @@ void kpanic_ex(const char *file, int line, const char *func, const char *fmt, ..
     uint64_t seconds = ticks / TICK_FREQUENCY;
     uint64_t ms = (ticks % TICK_FREQUENCY) * 1000 / TICK_FREQUENCY;
 
-    uint8_t hours, minutes, seconds_rtc;
-    rtc_get_time(&hours, &minutes, &seconds_rtc);
+    datetime_t dt;
+    datetime_get_current(&dt);
 
     kprintf("========================================\n");
     kprintf("            KERNEL PANIC\n");
     kprintf("========================================\n\n");
 
     kprintf("[uptime]  %llu.%03llus\n", seconds, ms);
-    kprintf("[rtc]     %02u:%02u:%02u\n\n", hours, minutes, seconds_rtc);
+    char datetime_str[32];
+    datetime_to_string(&dt, datetime_str, sizeof(datetime_str));
+    kprintf("[datetime] %s\n", datetime_str);
 
     kprintf("[location] %s() in %s:%d\n\n", func, file, line);
 

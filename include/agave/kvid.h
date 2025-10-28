@@ -80,5 +80,7 @@ void kvprintf(const char* fmt, va_list args);
 
 void kupdate_cursor(void);
 
+int ksnprintf(char *buf, size_t size, const char *fmt, ...);
+
 void kclear(void);
 #endif //AGAVE_KVID_H
